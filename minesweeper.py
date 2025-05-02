@@ -178,7 +178,27 @@ class MinesweeperAI():
         Called when the Minesweeper board tells us, for a given
         safe cell, how many neighboring cells have mines in them.
         """
-        raise NotImplementedError
+        self.moves_made.add(cell)
+        self.mark_safe(cell)
+
+        neighbors = set()
+
+        for row in range(cell[0] - 1, cell[0] + 2):
+            for col in range(cell[1] - 1, cell[1] + 2):
+                if 0 <= row < self.height and 0 <= col < self.width:
+                    neighbor = (row, col)
+                    if neighbor == cell:
+                        continue  # skip the cell itself
+                    if (
+                        neighbor not in self.safes and
+                        neighbor not in self.mines and
+                        neighbor not in self.moves_made
+                    ):
+                        neighbors.add(neighbor)
+                    else:
+                        count = max(count - 1, 0)
+
+        self.knowledge.append(Sentence(neighbors, count))
 
     def make_safe_move(self):
         """
