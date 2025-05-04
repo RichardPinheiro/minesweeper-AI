@@ -219,12 +219,13 @@ class MinesweeperAI():
                     changed = True
         return changed
 
-    def infer_new_sentences(self) -> None:
+    def infer_new_sentences(self) -> bool:
         """
         Infers new logical sentences by analyzing subset relationships in the knowledge base.
         If one sentence is a subset of another, a new sentence is formed from the difference
         in cells and counts, representing additional knowledge about remaining unknown cells.
         """
+        changed = False
         for a in self.knowledge:
             for b in self.knowledge:
                 if a is b:
@@ -233,6 +234,8 @@ class MinesweeperAI():
                     new = Sentence(a.cells - b.cells, a.count - b.count)
                     if new.cells and new not in self.knowledge:
                         self.knowledge.append(new)
+                        changed = True
+        return changed
 
     def make_safe_move(self):
         """
