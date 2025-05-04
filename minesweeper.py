@@ -180,7 +180,21 @@ class MinesweeperAI():
         """
         self.moves_made.add(cell)
         self.mark_safe(cell)
+        self.knowledge.append(self.create_sentence(cell, count))
 
+    def create_sentence(self, cell: tuple[int, int], count: int) -> Sentence:
+        """
+        Generates a logical sentence based on a revealed safe cell and the number
+        of neighboring mines reported by the board.
+
+        This method identifies all neighboring cells around the given cell,
+        excludes those already known to be safe, mines, or moves already made,
+        and adjusts the mine count accordingly if any known mines are present.
+
+        Returns:
+            Sentence: A new sentence representing the unknown neighboring cells and
+                    the adjusted count of mines among them.
+        """
         neighbors = set()
 
         for row in range(cell[0] - 1, cell[0] + 2):
@@ -198,7 +212,7 @@ class MinesweeperAI():
                     else:
                         count = max(count - 1, 0)
 
-        self.knowledge.append(Sentence(neighbors, count))
+        return Sentence(neighbors, count)
 
     def make_safe_move(self):
         """
