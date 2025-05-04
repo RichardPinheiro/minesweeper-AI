@@ -248,6 +248,14 @@ class MinesweeperAI():
 
     def make_random_move(self):
         """
-        Returns a move to make on the Minesweeper board.
+        Returns a random move that is not known to be a mine
+        and has not been made on the Minesweeper board.
         """
-        raise NotImplementedError
+        moves = [
+            (row, col)
+            for row in range(self.height)
+            for col in range(self.width)
+            if (row, col) not in self.moves_made and (row, col) not in self.mines
+        ]
+
+        return random.choice(moves) if moves else None
