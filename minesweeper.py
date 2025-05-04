@@ -241,7 +241,10 @@ class MinesweeperAI():
         The move must be known to be safe, and not already a move
         that has been made.
         """
-        raise NotImplementedError
+        for move in self.safes:
+            if move not in self.moves_made:
+                return move
+        return None
 
     def make_random_move(self):
         """
