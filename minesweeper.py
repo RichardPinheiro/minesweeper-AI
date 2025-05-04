@@ -174,8 +174,8 @@ class MinesweeperAI():
         self.moves_made.add(cell)
         self.mark_safe(cell)
         self.knowledge.append(self.create_sentence_from_neighbors(cell, count))
-        self.infer_cells_from_knowledge();
-        self.infer_new_sentences();
+        self.infer_until_convergence();
+
 
     def create_sentence_from_neighbors(self, cell: tuple[int, int], count: int) -> Sentence:
         """
@@ -200,6 +200,18 @@ class MinesweeperAI():
                         neighbors.add(neighbor)
 
         return Sentence(neighbors, count)
+
+    def infer_until_convergence(self) -> None:
+        """
+        Repeatedly infers new safes, mines, and sentences until no further knowledge can be gained.
+        """
+        changed = True
+        while changed:
+            changed = False # reset before each iteration
+            if self.infer_cells_from_knowledge():
+                changed = True
+            if self.infer_new_sentences():
+                changed = True
 
     def infer_cells_from_knowledge(self) -> bool:
         """
