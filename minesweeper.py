@@ -190,14 +190,14 @@ class MinesweeperAI():
                     neighbor = (row, col)
                     if neighbor == cell:
                         continue
-                    if (
+                    if neighbor in self.mines:
+                        count = max(count - 1, 0)
+                    elif (
                         neighbor not in self.safes and
                         neighbor not in self.mines and
                         neighbor not in self.moves_made
                     ):
                         neighbors.add(neighbor)
-                    else:
-                        count = max(count - 1, 0)
 
         return Sentence(neighbors, count)
 
