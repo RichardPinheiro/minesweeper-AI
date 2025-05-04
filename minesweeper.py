@@ -180,26 +180,14 @@ class MinesweeperAI():
         """
         self.moves_made.add(cell)
         self.mark_safe(cell)
-        self.knowledge.append(self.create_sentence(cell, count))
+        self.knowledge.append(self.create_sentence_from_neighbors(cell, count))
+        self.infer_cells_from_knowledge();
+        self.infer_new_sentences();
 
-        for sentence in self.knowledge:
-            for cell in sentence.known_mines():
-                self.mark_mine(cell)
-            for cell in sentence.known_safes():
-                self.mark_safe(cell)
-
-    def create_sentence(self, cell: tuple[int, int], count: int) -> Sentence:
+    def create_sentence_from_neighbors(self, cell: tuple[int, int], count: int) -> Sentence:
         """
-        Generates a logical sentence based on a revealed safe cell and the number
-        of neighboring mines reported by the board.
-
-        This method identifies all neighboring cells around the given cell,
-        excludes those already known to be safe, mines, or moves already made,
-        and adjusts the mine count accordingly if any known mines are present.
-
-        Returns:
-            Sentence: A new sentence representing the unknown neighboring cells and
-                    the adjusted count of mines among them.
+        Constructs a sentence from the unknown neighbors of a revealed safe cell.
+        Excludes known safes, mines, and past moves, and adjusts the count if mines are known.
         """
         neighbors = set()
 
@@ -208,7 +196,7 @@ class MinesweeperAI():
                 if 0 <= row < self.height and 0 <= col < self.width:
                     neighbor = (row, col)
                     if neighbor == cell:
-                        continue  # skip the cell itself
+                        continue
                     if (
                         neighbor not in self.safes and
                         neighbor not in self.mines and
@@ -219,6 +207,33 @@ class MinesweeperAI():
                         count = max(count - 1, 0)
 
         return Sentence(neighbors, count)
+
+    def infer_cells_from_knowledge(self) -> None:
+        """
+        Infers and marks additional safe cells and mines based on the current knowledge base.
+        Iterates through all known logical sentences. If a sentence implies that all remaining
+        cells are either safe or mines, those cells are marked accordingly.
+        """
+        for sentence in self.knowledge:
+            for cell in sentence.known_mines():
+                self.mark_mine(cell)
+            for cell in sentence.known_safes():
+                self.mark_safe(cell)
+
+    def infer_new_sentences(self) -> None:
+        """
+        Infers new logical sentences by analyzing subset relationships in the knowledge base.
+        If one sentence is a subset of another, a new sentence is formed from the difference
+        in cells and counts, representing additional knowledge about remaining unknown cells.
+        """
+        for a in self.knowledge:
+            for b in self.knowledge:
+                if a is b:
+                    continue
+                if b.cells.issubset(a.cells):
+                    new = Sentence(a.cells - b.cells, a.count - b.count)
+                    if new.cells and new not in self.knowledge:
+                        self.knowledge.append(new)
 
     def make_safe_move(self):
         """
