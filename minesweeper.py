@@ -153,7 +153,7 @@ class MinesweeperAI():
         self.safes = set()
 
         # List of sentences about the game known to be true
-        self.knowledge = []
+        self.knowledge: list[Sentence] = []
 
     def mark_mine(self, cell):
         """
@@ -181,6 +181,12 @@ class MinesweeperAI():
         self.moves_made.add(cell)
         self.mark_safe(cell)
         self.knowledge.append(self.create_sentence(cell, count))
+
+        for sentence in self.knowledge:
+            for cell in sentence.known_mines():
+                self.mark_mine(cell)
+            for cell in sentence.known_safes():
+                self.mark_safe(cell)
 
     def create_sentence(self, cell: tuple[int, int], count: int) -> Sentence:
         """
