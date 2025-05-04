@@ -1,4 +1,3 @@
-import itertools
 import random
 
 
@@ -126,6 +125,7 @@ class Sentence():
         """
         if cell in self.cells:
             self.cells.remove(cell)
+
 
 class MinesweeperAI():
     """
