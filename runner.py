@@ -15,7 +15,7 @@ WHITE = (255, 255, 255)
 
 # Create game
 pygame.init()
-size = width, height = 600, 400
+size = width, height = 1200, 700
 screen = pygame.display.set_mode(size)
 
 # Fonts
