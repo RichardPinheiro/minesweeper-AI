@@ -58,19 +58,12 @@ class Minesweeper():
         within one row and column of a given cell,
         not including the cell itself.
         """
-
-        # Keep count of nearby mines
         count = 0
 
-        # Loop over all cells within one row and column
         for i in range(cell[0] - 1, cell[0] + 2):
             for j in range(cell[1] - 1, cell[1] + 2):
-
-                # Ignore the cell itself
                 if (i, j) == cell:
                     continue
-
-                # Update count if cell in bounds and is mine
                 if 0 <= i < self.height and 0 <= j < self.width:
                     if self.board[i][j]:
                         count += 1
@@ -215,9 +208,9 @@ class MinesweeperAI():
         cells are either safe or mines, those cells are marked accordingly.
         """
         for sentence in self.knowledge:
-            for cell in sentence.known_mines():
+            for cell in list(sentence.known_mines()):
                 self.mark_mine(cell)
-            for cell in sentence.known_safes():
+            for cell in list(sentence.known_safes()):
                 self.mark_safe(cell)
 
     def infer_new_sentences(self) -> None:
