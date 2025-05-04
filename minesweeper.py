@@ -201,17 +201,23 @@ class MinesweeperAI():
 
         return Sentence(neighbors, count)
 
-    def infer_cells_from_knowledge(self) -> None:
+    def infer_cells_from_knowledge(self) -> bool:
         """
         Infers and marks additional safe cells and mines based on the current knowledge base.
         Iterates through all known logical sentences. If a sentence implies that all remaining
         cells are either safe or mines, those cells are marked accordingly.
         """
+        changed = False
         for sentence in self.knowledge:
             for cell in list(sentence.known_mines()):
-                self.mark_mine(cell)
+                if cell not in self.mines:
+                    self.mark_mine(cell)
+                    changed = True
             for cell in list(sentence.known_safes()):
-                self.mark_safe(cell)
+                if cell not in self.safes:
+                    self.mark_safe(cell)
+                    changed = True
+        return changed
 
     def infer_new_sentences(self) -> None:
         """
