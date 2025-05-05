@@ -1,6 +1,6 @@
 # 🎮 Minesweeper AI
 
-![AI Agent playing Minesweeper](assets/images/screenshot.png)
+![AI Agent playing Minesweeper](assets/images/minesweeper-ai.png)
 
 This project focuses on building an **AI agent** that plays Minesweeper using **propositional logic** and **inference-based reasoning** to uncover safe cells and locate hidden mines.
 
